@@ -4,6 +4,5 @@ project to provide templates for kick starting code projects based on types / ar
 ## architecture
 
 | language | nodeJs |
-|:-----------:|:----------------:|
 |libraries| commander |
 
