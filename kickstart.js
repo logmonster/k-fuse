@@ -4,10 +4,9 @@
 
 var commandParser = require("./CodeModules/CommandParser");
 
+// console.log(commandParser.version);
 commandParser.parse(process.argv);
 
-
-// console.log(commandParser.version);
 
 /*
 const program = require('commander');

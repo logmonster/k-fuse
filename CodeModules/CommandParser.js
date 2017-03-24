@@ -3,6 +3,7 @@
 
 var _parser = require('minimist');
 var _fs = require('fs');
+var _sprintf = require("sprintf-js").sprintf;
 
 var _archetypesJson = null;
 var _lastAccessTimestamp = new Date().getTime();
@@ -29,25 +30,23 @@ var _parse = (arguments) => {
   // check commands
   if (_commands.indexOf('help') != -1) {
     console.log('**** help');
+
   } else if (_commands.indexOf('get') != -1) {
-    console.log('**** get');
+    get(_argv);
   } else if (_commands.indexOf('list') != -1) {
     list(_argv);
-  }
-
-  // check switches (if necessary)
-
-  if (_argv.hasOwnProperty("list")) {
-    console.log("list");
-  } else if (_argv.hasOwnProperty("get")) {
-    console.log("get");
-  } else if (_argv.hasOwnProperty("help")) {
-    console.log("help***");
+  } else {
+    // unknown command (treat as list by default)
+    list(_argv);
   }
 
 
   // TODO: remove debug (someday)
-  console.log(_argv);
+  //console.log(_argv);
+};
+
+var get = (_argv) => {
+  console.log('try to get certain files from Git');
 };
 
 /*
@@ -56,11 +55,67 @@ var _parse = (arguments) => {
  *    pattern -- list out only the archetypes that matches this pattern (e.g. html*)
  */
 var list = (_argv) => {
-  let _json = _updateArchetypeJson();
+  // create a clone (but at the same update the archetypesJson as well)
+  let _json = JSON.parse(JSON.stringify(_updateArchetypeJson()));
+
   // check switches
 
-  console.log(_json);
+  // --------------------
+  // * keywords filtering
+  // --------------------
+  if (_argv.hasOwnProperty('keywords')) {
+    let _sValArr = _argv['keywords'].split(",");
+    let _size = _json.archetypes.length;
 
+    for (let _i=_size-1; _i>=0; _i--) {
+      let _kwordsArr = _json.archetypes[_i]['keywords'];
+      let _found = false;
+
+      for (let _j=0; _j<_sValArr.length; _j++) {
+        if (_kwordsArr.indexOf(_sValArr[_j].trim()) != -1) {
+          _found = true;
+          break;
+        }
+      } // end -- for (_sValArr indexOf check)
+
+      if (_found==false) _json.archetypes.splice(_i, 1);
+
+    } // end -- for (loop from back)
+
+  } else if (_argv.hasOwnProperty('pattern')) {
+
+    // ----------------------------------
+    // * patterns (description) filtering
+    // CAVEAT => when handling *node* => misinterprete as "node_modules" maybe OS level bug???
+    //  solution -> quote the terms using "" or ''
+    // ----------------------------------
+    let _sVal = _argv['pattern'].trim();
+    let _regExp = new RegExp( '^'+_sVal.replace(new RegExp(/\*/, 'g'), '.*')+'$' );
+    let _size = _json.archetypes.length;
+
+    for (let _i=_size-1; _i>=0; _i--) {
+      let _desc = _json.archetypes[_i]['desc'];
+      if (_regExp.test(_desc) == false) {
+        _json.archetypes.splice(_i, 1);
+      } // end -- if (pattern match with _desc)
+    } // end -- for (backward loop on archetypes)
+  }
+
+  // ---------------------------------
+  // * final display (after filtering)
+  // ---------------------------------
+
+  let _len = _json.archetypes.length;
+
+  console.log('%s', '\r\nThe list of available archetypes are as follows:\r\n\r\n');
+  console.log(_sprintf('%-s    \t%-50s    %s', 'id', 'archetype description', 'keywords' ));
+  console.log(_sprintf("%s", '------------------------------------------------------------------------------------'));
+  for (let _i=0; _i<_len; _i++) {
+    let _info = _json.archetypes[_i];
+    console.log(_sprintf('%02d    \t%-50s    %s', _info.id, _info.desc, _info.keywords.toString() ));
+  }
+  console.log(_sprintf('\r\ncount: %+3s', (_len+'') ));
+  console.log("\r\n");
 }
 
 
