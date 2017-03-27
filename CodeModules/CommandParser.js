@@ -64,8 +64,10 @@ var get = (_argv) => {
   });*/
 
   var _json = null;
+  var _url = "https://api.github.com/repos/logmonster/k-fuse/contents/README.md";
+  _url = "https://api.github.com/repos/logmonster/k-fuse/contents/Templates/01/template.tar.gz"
 
-  _q.nfcall(_cmd.get, 'curl https://api.github.com/repos/logmonster/k-fuse/contents/README.md')
+  _q.nfcall(_cmd.get, 'curl '+_url)
     .then(function(data) {
       console.log('** inside then (unexpected) => ');
       console.log(data);
