@@ -1,31 +1,24 @@
 
 // link: https://www.npmjs.com/package/minimist
 //require('ssl-root-cas').inject();
+//var _gitApiInstance = require('github');
+//var _gitApi = new _gitApiInstance({ debug: true });
 
 var _parser = require('minimist');
 var _fs = require('fs');
 var _sprintf = require("sprintf-js").sprintf;
-var _gitApiInstance = require('github');
 
 var _archetypesJson = null;
 var _lastAccessTimestamp = new Date().getTime();
-var _gitApi = new _gitApiInstance({ debug: true });
 
-_gitApi.repos.getContent({
-    owner: "mikedeboer",
-    repo: "node-github",
-    path: ""
-}, function(err, res) {
-    console.log(err, res);
-});
+// ** node-cmd
+var _cmd = require('node-cmd');
+// ** q promises framework
+var _q = require('q');
 
-//_gitApi.misc.getLicenses({});
 
-/*console.log(_gitApi.repos.getReadme({
-  owner: 'logmonster',
-  repo: 'https://github.com/logmonster/k-fuse'
-}));
-*/
+
+
 
 /* ---------------- */
 /*  function area   */
@@ -65,19 +58,27 @@ var _parse = (arguments) => {
 };
 
 var get = (_argv) => {
-  /*
-   *  curl -i https://api.github.com/users/logmonster --insecure
-   
-   curl -i https://api.github.com/repos/logmonster/k-fuse --insecure
-   -- get info on all possible links... of this resource (focus only on the download_url)
-   curl -i https://api.github.com/repos/logmonster/k-fuse/contents/README.md --insecure
-   curl -i https://raw.githubusercontent.com/logmonster/k-fuse/master/README.md --insecure
+  /*_cmd.get('curl https://api.github.com/repos/logmonster/k-fuse/contents/LICENSE', function(data) {
+     var _json=JSON.parse(data);
+     console.log(_json.download_url);
+  });*/
 
-   */
+  var _json = null;
+
+  _q.nfcall(_cmd.get, 'curl https://api.github.com/repos/logmonster/k-fuse/contents/README.md')
+    .then(function(data) {
+      console.log('** inside then (unexpected) => ');
+      console.log(data);
+    })
+    .fail(function(err) {
+      // weird... everything is treated as error....
+      console.log(err);
+    })
+    .done();
 
 
+  console.log('just after nfcall');
   // TODO: switches
-
 };
 
 /*

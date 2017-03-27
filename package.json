@@ -31,8 +31,11 @@
   },
   "homepage": "https://github.com/logmonster/k-fuse#readme",
   "dependencies": {
+    "curl": "^0.1.4",
     "github": "^9.2.0",
     "minimist": "^1.2.0",
+    "node-cmd": "^2.0.0",
+    "q": "^1.5.0",
     "sprintf-js": "^1.0.3"
   }
 }
