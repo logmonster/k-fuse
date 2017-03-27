@@ -1,0 +1,41 @@
+{
+  "name": "k-fuse",
+  "version": "1.0.0",
+  "description": "providing templates to kick start code projects based on types and archetypes",
+  "main": "kickstart.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": " "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/logmonster/k-fuse.git"
+  },
+  "keywords": [
+    "fuse",
+    "kick",
+    "start",
+    "node",
+    "html5",
+    "bootstrap",
+    "ng2",
+    "angularJs",
+    "bootstrap",
+    "font",
+    "awesome"
+  ],
+  "author": "Jason.Wong",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/logmonster/k-fuse/issues"
+  },
+  "homepage": "https://github.com/logmonster/k-fuse#readme",
+  "dependencies": {
+    "curl": "^0.1.4",
+    "github": "^9.2.0",
+    "minimist": "^1.2.0",
+    "node-cmd": "^2.0.0",
+    "q": "^1.5.0",
+    "sprintf-js": "^1.0.3"
+  }
+}
