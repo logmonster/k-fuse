@@ -33,9 +33,14 @@
   "dependencies": {
     "curl": "^0.1.4",
     "github": "^9.2.0",
+    "gulp": "^3.9.1",
+    "gulp-gunzip": "0.0.3",
+    "gulp-untar": "0.0.6",
     "minimist": "^1.2.0",
     "node-cmd": "^2.0.0",
     "q": "^1.5.0",
-    "sprintf-js": "^1.0.3"
+    "request": "^2.81.0",
+    "sprintf-js": "^1.0.3",
+    "vinyl-source-stream": "^1.1.0"
   }
 }

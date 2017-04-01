@@ -6,15 +6,18 @@
 
 var _parser = require('minimist');
 var _fs = require('fs');
+var _path = require('path');
 var _sprintf = require("sprintf-js").sprintf;
-
-var _archetypesJson = null;
-var _lastAccessTimestamp = new Date().getTime();
-
 // ** node-cmd
 var _cmd = require('node-cmd');
 // ** q promises framework
 var _q = require('q');
+
+var _uuid = require('./UuidGenerator');
+
+var _archetypesJson = null;
+var _lastAccessTimestamp = new Date().getTime();
+
 
 
 
@@ -57,30 +60,66 @@ var _parse = (arguments) => {
   //console.log(_argv);
 };
 
+/*
+ *  switches
+ *  - id => the archetype id (if none is given return error)
+ *  - dest (optional) => destination path for extracting template.tar.gz
+ */
 var get = (_argv) => {
-  /*_cmd.get('curl https://api.github.com/repos/logmonster/k-fuse/contents/LICENSE', function(data) {
-     var _json=JSON.parse(data);
-     console.log(_json.download_url);
-  });*/
+  var _destFolder = _path.join(__dirname, '../temp/');
 
-  var _json = null;
-  var _url = "https://api.github.com/repos/logmonster/k-fuse/contents/README.md";
-  _url = "https://api.github.com/repos/logmonster/k-fuse/contents/Templates/01/template.tar.gz"
+  // get the target file path for extraction
+  if (_argv.hasOwnProperty('dest')) {
+    _destFolder = _argv.dest+'/';
+  }
+  // get the archetype id
+  if (_argv.hasOwnProperty('id')) {
+    var _id = _argv.id;
+    var _url = 'https://api.github.com/repos/logmonster/k-fuse/contents/Templates/';
+    var _uuidName = _uuid.generate();
 
-  _q.nfcall(_cmd.get, 'curl '+_url)
-    .then(function(data) {
-      console.log('** inside then (unexpected) => ');
-      console.log(data);
-    })
-    .fail(function(err) {
-      // weird... everything is treated as error....
-      console.log(err);
-    })
-    .done();
+    if (typeof(_id)=='number') {
+      _url += _sprintf('%02d', (_id) ) + '/template.tar.gz';
+      // 1st level curl to get back the download_url;
+      _q.nfcall(_cmd.get, 'curl '+_url).
+        then(function(data) {}).
+        fail(function(err) {
+          // direct curl would result in "err" (weird)
+          var _downloadUrl = JSON.parse(err).download_url;
 
+          // 2nd level curl now
+          _q.nfcall(_cmd.get,
+            'curl '+_downloadUrl+' > '+
+            _destFolder+_uuidName+'-template.tar.gz').
+            then(function(data) {
+              // 3rd level, run tar -xvf
+              _q.nfcall(_cmd.get,
+                // rm after tar -xvf
+                'tar -xvf '+_destFolder+_uuidName+'-template.tar.gz -C '+
+                _destFolder+' && rm '+_destFolder+_uuidName+'-template.tar.gz'
+              ).then(function(data) {
+                  console.log('* extraction done');
+                }).
+                fail(function(err) {
+                  console.log('** ERR ');
+                  console.log(err);
+                }).
+                done(); // 3rd level, tar and rm
+            }).
+            fail(function(err) {
+              console.log('*** ERR: ');
+              console.log(err);
+              return;
+            }).
+            done(); // 2nd curl download_url
+        }).
+        done(); // 1st curl the url(s) for 2nd level curl
+    }
 
-  console.log('just after nfcall');
-  // TODO: switches
+  } else {
+    console.log('** ERR: you need to provide an archetype id !!');
+    return;
+  }
 };
 
 /*
