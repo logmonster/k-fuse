@@ -2,7 +2,7 @@
   "archetypes": [
     { "id": 1, "keywords": ["html5", "bootstrap"], "desc": "html5 + bootstrap + font-awesome" },
     { "id": 2, "keywords": ["html5", "bootstrap", "jQuery"], "desc": "html5 + bootstrap + font-awesome + jQuery" },
-    { "id": 3, "keywords": ["ng2", "node", "nodejs"], "desc": "angular2 (ng2)" },
+    { "id": 3, "keywords": ["ng2", "node", "nodejs", "angular", "ng2"], "desc": "angular2 (ng2) version 4.0.0" },
     { "id": 4, "keywords": ["node", "nodejs"], "desc": "node (plain project)" },
     { "id": 5, "keywords": ["node", "nodejs", "express"], "desc": "node + express" }
   ],
