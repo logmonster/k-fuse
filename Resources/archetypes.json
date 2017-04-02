@@ -6,5 +6,5 @@
     { "id": 4, "keywords": ["node", "nodejs"], "desc": "node (plain project)" },
     { "id": 5, "keywords": ["node", "nodejs", "express"], "desc": "node + express" }
   ],
-  "purpose": "maintain the list of supported archetypes"
+  "purpose": "maintain the list of supported archetype(s)"
 }
